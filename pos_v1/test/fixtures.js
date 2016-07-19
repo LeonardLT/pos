@@ -53,3 +53,5 @@ function loadPromotions() {
     }
   ];
 }
+exports.loadAllItems = loadAllItems;
+exports.loadPromotions = loadPromotions;
