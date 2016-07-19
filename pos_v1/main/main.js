@@ -62,7 +62,7 @@ function buildFianlCartItems(cartItems, promotionItems) {
     finalItemInfo.item = itemInfo.item;
     finalItemInfo.count = itemInfo.count;
     if (isPromotion(itemInfo, promotionItems) == true) {
-      var free = parseInt((itemInfo.count / 2)) * itemInfo.item.price;
+      var free = parseInt((itemInfo.count / 3)) * itemInfo.item.price;
       finalItemInfo.subtotal = itemInfo.count * itemInfo.item.price - free;
     } else {
       finalItemInfo.subtotal = itemInfo.count * itemInfo.item.price;
@@ -104,11 +104,11 @@ function buildReceipt(finalCartItems, finalTotal) {
   var receipt = '***<没钱赚商店>收据***\n';
   finalCartItems.forEach(function(finalItemInfo) {
     receipt += '名称：' + finalItemInfo.item.name + '，数量：' + finalItemInfo.count + finalItemInfo.item.unit +
-      '，单价：' + finalItemInfo.item.price + '(元)' + '，小计：' + finalItemInfo.subtotal + '(元）' + '\n';
+      '，单价：' + finalItemInfo.item.price.toFixed(2) + '(元)' + '，小计：' + finalItemInfo.subtotal.toFixed(2) + '(元）' + '\n';
   });
   receipt += '----------------------\n';
-  receipt += '总计：' + finalTotal.total + '(元)' + '\n';
-  receipt += '节省：' + finalTotal.save + '(元)' + '\n';
+  receipt += '总计：' + finalTotal.total.toFixed(2)+ '(元)' + '\n';
+  receipt += '节省：' + finalTotal.save.toFixed(2) + '(元)' + '\n';
   receipt += '**********************';
   console.log(receipt);
 }
