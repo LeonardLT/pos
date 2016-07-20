@@ -1,168 +1,162 @@
 'use strict';
 
 //TODO: 请在该文件中实现练习要求并删除此注释
-//#NO.1:获取商品数量
-function barcodeCount(barcodeArr) {
-  var initCartItems = [];
-  // debugger;
-  barcodeArr.forEach(function(barcode) {
-    var item = {};
-    if (isExist(barcode, initCartItems) === false) {
-      if (barcode.length > 10) {
-        item.barcode = barcode.substring(0, 10);
-        item.count = barcode.substring(11);
-      } else {
-        item.barcode = barcode;
-        item.count = 1;
-      }
-      initCartItems.push(item);
-    }
-  });
-  // console.log(initCartItems);
-  return initCartItems;
-}
-
-function isExist(barcode, initCartItems) {
-  for (var i = 0; i < initCartItems.length; i++) {
-    if (barcode === initCartItems[i].barcode) {
-      initCartItems[i].count++;
-      return true;
-    }
-  }
-  return false;
-}
-
-//#NO.2:获取商品信息
-var fixtures = require('../test/fixtures.js');
-var allCartItem = fixtures.loadAllItems();
-
-function getCartItemInfo(initCartItems, allCartItem) {
-  var cartItems = [];
-  initCartItems.forEach(function(item) {
-    var cartItemInfo = {};
-    var itemInfo = allCartItem.find(function(itemInfo) {
-      if (item.barcode === itemInfo.barcode) {
-        return itemInfo;
-      }
-    });
-    cartItemInfo.item = itemInfo;
-    cartItemInfo.count = item.count;
-    cartItems.push(cartItemInfo);
-  });
-  // console.log(cartItems);
-  return cartItems;
-}
-
-//#NO.3:计算优惠价格 & #NO.4:计算优惠小计
-var promotionItems = fixtures.loadPromotions();
-
-function buildFianlCartItems(cartItems, promotionItems) {
-  var finalCartItems = [];
-  cartItems.forEach(function(itemInfo) {
-    var finalItemInfo = {};
-    finalItemInfo.item = itemInfo.item;
-    finalItemInfo.count = itemInfo.count;
-    if (isPromotion(itemInfo, promotionItems) == true) {
-      var free = parseInt((itemInfo.count / 3)) * itemInfo.item.price;
-      finalItemInfo.subtotal = itemInfo.count * itemInfo.item.price - free;
-    } else {
-      finalItemInfo.subtotal = itemInfo.count * itemInfo.item.price;
-    }
-    finalCartItems.push(finalItemInfo);
-  });
-  // console.log(finalCartItems);
-  return finalCartItems;
-}
-
-function isPromotion(itemInfo, promotionItems) {
-  var isPro = false;
-  promotionItems.forEach(function(promotionType) {
-    for (var i = 0; i < promotionType.barcodes.length; i++) {
-      if (promotionType.barcodes[i] == itemInfo.item.barcode) {
-        isPro = true;
-      }
-    }
-  });
-  return isPro;
-}
-
-
-//#NO.5：计算总价及节省金额
-function buildFianlTotal(finalCartItems) {
-  var finalTotal = {};
-  finalTotal.total = 0;
-  finalTotal.save = 0;
-  finalCartItems.forEach(function(finalItemInfo) {
-    finalTotal.total += finalItemInfo.subtotal;
-    finalTotal.save += (finalItemInfo.count * finalItemInfo.item.price) - finalItemInfo.subtotal;
-  });
-  // console.log(finalTotal);
-  return finalTotal;
-}
-
-//#NO.6:生成小票 & #NO.7:打印
-function buildReceipt(finalCartItems, finalTotal) {
-  var receipt = '***<没钱赚商店>收据***\n';
-  finalCartItems.forEach(function(finalItemInfo) {
-    receipt += '名称：' + finalItemInfo.item.name + '，数量：' + finalItemInfo.count + finalItemInfo.item.unit +
-      '，单价：' + finalItemInfo.item.price.toFixed(2) + '(元)' + '，小计：' + finalItemInfo.subtotal.toFixed(2) + '(元)' + '\n';
-  });
-  receipt += '----------------------\n';
-  receipt += '总计：' + finalTotal.total.toFixed(2) + '(元)' + '\n';
-  receipt += '节省：' + finalTotal.save.toFixed(2) + '(元)' + '\n';
-  receipt += '**********************';
-  // console.log(receipt);
-  return receipt;
-}
-
 function printReceipt(tags) {
-
-  var allCartItem = loadAllItems();
-  var promotionItems = loadPromotions();
-
-  var initCartItems = barcodeCount(tags);
-
-  var cartItems = getCartItemInfo(initCartItems, allCartItem);
-
-  var finalCartItems = buildFianlCartItems(cartItems, promotionItems);
-
-  var finalTotal = buildFianlTotal(finalCartItems);
-
-  var receipt = buildReceipt(finalCartItems, finalTotal);
-
-  console.log(receipt);
+    let allItems = loadAllItems();
+    let promotions = loadPromotions();
+    let formattedTags = formatTags(tags);
+    let countedBarcodes = countBarcodes(formattedTags);
+    let cartItems = buildCartItems(countedBarcodes, allItems);
+    let promotedItems = buildPromotedItems(cartItems, promotions);
+    let totalPrices = calculateTotalPrices(promotedItems);
+    let receipt = buildReceipt(promotedItems, totalPrices);
+    let receiptString = printReceiptString(receipt);
+    console.log(receiptString);
 }
 
-//测试
-// var tags = [
-//   'ITEM000001',
-//   'ITEM000001',
-//   'ITEM000001',
-//   'ITEM000001',
-//   'ITEM000001',
-//   'ITEM000003-2',
-//   'ITEM000005',
-//   'ITEM000005',
-//   'ITEM000005'
-// ];
-//
-// var barcodeArr1 = [
-//   'ITEM000000',
-//   'ITEM000001',
-//   'ITEM000002',
-//   'ITEM000003',
-//   'ITEM000004',
-//   'ITEM000005-2',
-// ];
-//
-// console.log('#1-result:');
-// var initCartItems = barcodeCount(barcodeArr);
-// console.log('#2-result:');
-// var cartItems = getCartItemInfo(initCartItems, allCartItem);
-// console.log('#3 & #4-result:');
-// var finalCartItems = buildFianlCartItems(cartItems, promotionItems);
-// console.log('#5-result:');
-// var finalTotal = buildFianlTotal(finalCartItems);
-// console.log('#6 & #7-result:');
-// var receipt = buildReceipt(finalCartItems, finalTotal);
-// printReceipt(tags);
+
+function isExist(barcode, array) {
+    for (let countItem of array) {
+        if (barcode === countItem.barcode) {
+            return countItem;
+        }
+    }
+    return null;
+}
+
+
+//#1
+function formatTags(tags) {
+    let formattedTags = [];
+    for (let tag of tags) {
+        if (tag.indexOf("-") === -1) {
+            formattedTags.push({barcode: tag, count: 1});
+        } else {
+            let temps = tag.split("-");
+            formattedTags.push({barcode: temps[0], count: parseInt(temps[1])});
+        }
+    }
+    return formattedTags;
+}
+
+
+//#2
+function countBarcodes(formattedTags) {
+    let countedBarcodes = [];
+    for (let formattedTag of formattedTags) {
+        let countItem = isExist(formattedTag.barcode, countedBarcodes);
+        if (countItem === null) {
+            countedBarcodes.push({barcode: formattedTag.barcode, count: formattedTag.count})
+        } else {
+            countItem.count += formattedTag.count;
+        }
+    }
+    return countedBarcodes;
+}
+
+
+//#3
+function buildCartItems(countedBarcodes, allItems) {
+    let cartItems = [];
+    for (let countedBarcode of countedBarcodes) {
+        let item = isExist(countedBarcode.barcode, allItems);
+        let cartItem = {
+            barcode: item.barcode,
+            name: item.name,
+            unit: item.unit,
+            price: item.price,
+            count: countedBarcode.count
+        };
+        cartItems.push(cartItem);
+    }
+    return cartItems;
+}
+
+//#4
+function buildPromotedItems(cartItems, promotions) {
+    let promotedItems = [];
+    let currentPromotion = promotions[0];
+    for (let cartItem of cartItems) {
+
+        let saved = 0;
+        let hasPromoted = false;
+        for (let barcode of currentPromotion.barcodes) {
+            if (cartItem.barcode === barcode) {
+                hasPromoted = true;
+            }
+        }
+        if (currentPromotion.type === 'BUY_TWO_GET_ONE_FREE' && hasPromoted) {
+            var savedCount = Math.floor(cartItem.count / 3);
+            saved = cartItem.price * savedCount;
+        }
+
+        let payPrice = cartItem.count * cartItem.price - saved;
+
+        promotedItems.push({
+            barcode: cartItem.barcode,
+            name: cartItem.name,
+            unit: cartItem.unit,
+            price: cartItem.price,
+            count: cartItem.count,
+            payPrice,
+            saved
+        });
+    }
+    return promotedItems;
+}
+
+//#5
+function calculateTotalPrices(promotedItems) {
+    let totalPrices = {
+        totalPayPrice: 0,
+        totalSaved: 0
+    };
+
+    for (let promotedItem of promotedItems) {
+        totalPrices.totalPayPrice += promotedItem.payPrice;
+        totalPrices.totalSaved += promotedItem.saved;
+    }
+    return totalPrices;
+}
+
+//#6
+function buildReceipt(promotedItems, totalPrices) {
+    let receiptItems = [];
+
+    for (let element of promotedItems) {
+        receiptItems.push(
+            {
+                name: element.name,
+                unit: element.unit,
+                price: element.price,
+                count: element.count,
+                payPrice: element.payPrice
+            }
+        );
+    }
+    let receipt = {
+        receiptItems,
+        totalPayPrice: totalPrices.totalPayPrice,
+        totalSaved: totalPrices.totalSaved
+    };
+    return receipt;
+}
+
+
+//#7
+function printReceiptString(receipt) {
+    let receiptString = '***<没钱赚商店>收据***';
+    for (let receiptItem of receipt.receiptItems) {
+        receiptString += `
+名称：${receiptItem.name}，数量：${receiptItem.count}${receiptItem.unit}，单价：${receiptItem.price.toFixed(2)}(元)，小计：${receiptItem.payPrice.toFixed(2)}(元)`;
+    }
+
+    receiptString += `
+----------------------
+总计：${receipt.totalPayPrice.toFixed(2)}(元)
+节省：${receipt.totalSaved.toFixed(2)}(元)
+**********************`;
+
+
+    return receiptString;
+}
