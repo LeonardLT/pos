@@ -27,37 +27,37 @@ function isExist(barcode, array) {
 
 //#1
 function formatTags(tags) {
-    let formattedTags = [];
+    let result = [];
     for (let tag of tags) {
         if (tag.indexOf("-") === -1) {
-            formattedTags.push({barcode: tag, count: 1});
+            result.push({barcode: tag, count: 1});
         } else {
             let temps = tag.split("-");
-            formattedTags.push({barcode: temps[0], count: parseInt(temps[1])});
+            result.push({barcode: temps[0], count: parseInt(temps[1])});
         }
     }
-    return formattedTags;
+    return result;
 }
 
 
 //#2
 function countBarcodes(formattedTags) {
-    let countedBarcodes = [];
+    let result = [];
     for (let formattedTag of formattedTags) {
-        let countItem = isExist(formattedTag.barcode, countedBarcodes);
+        let countItem = isExist(formattedTag.barcode, result);
         if (countItem === null) {
-            countedBarcodes.push({barcode: formattedTag.barcode, count: formattedTag.count})
+            result.push({barcode: formattedTag.barcode, count: formattedTag.count})
         } else {
             countItem.count += formattedTag.count;
         }
     }
-    return countedBarcodes;
+    return result;
 }
 
 
 //#3
 function buildCartItems(countedBarcodes, allItems) {
-    let cartItems = [];
+    let result = [];
     for (let countedBarcode of countedBarcodes) {
         let item = isExist(countedBarcode.barcode, allItems);
         let cartItem = {
@@ -67,17 +67,16 @@ function buildCartItems(countedBarcodes, allItems) {
             price: item.price,
             count: countedBarcode.count
         };
-        cartItems.push(cartItem);
+        result.push(cartItem);
     }
-    return cartItems;
+    return result;
 }
 
 //#4
 function buildPromotedItems(cartItems, promotions) {
-    let promotedItems = [];
+    let result = [];
     let currentPromotion = promotions[0];
     for (let cartItem of cartItems) {
-
         let saved = 0;
         let hasPromoted = false;
         for (let barcode of currentPromotion.barcodes) {
@@ -92,7 +91,7 @@ function buildPromotedItems(cartItems, promotions) {
 
         let payPrice = cartItem.count * cartItem.price - saved;
 
-        promotedItems.push({
+        result.push({
             barcode: cartItem.barcode,
             name: cartItem.name,
             unit: cartItem.unit,
@@ -102,27 +101,27 @@ function buildPromotedItems(cartItems, promotions) {
             saved
         });
     }
-    return promotedItems;
+    return result;
 }
+
 
 //#5
 function calculateTotalPrices(promotedItems) {
-    let totalPrices = {
+    let result = {
         totalPayPrice: 0,
         totalSaved: 0
     };
 
     for (let promotedItem of promotedItems) {
-        totalPrices.totalPayPrice += promotedItem.payPrice;
-        totalPrices.totalSaved += promotedItem.saved;
+        result.totalPayPrice += promotedItem.payPrice;
+        result.totalSaved += promotedItem.saved;
     }
-    return totalPrices;
+    return result;
 }
 
 //#6
 function buildReceipt(promotedItems, totalPrices) {
     let receiptItems = [];
-
     for (let element of promotedItems) {
         receiptItems.push(
             {
@@ -134,12 +133,12 @@ function buildReceipt(promotedItems, totalPrices) {
             }
         );
     }
-    let receipt = {
+    let result = {
         receiptItems,
         totalPayPrice: totalPrices.totalPayPrice,
         totalSaved: totalPrices.totalSaved
     };
-    return receipt;
+    return result;
 }
 
 
@@ -156,7 +155,6 @@ function printReceiptString(receipt) {
 总计：${receipt.totalPayPrice.toFixed(2)}(元)
 节省：${receipt.totalSaved.toFixed(2)}(元)
 **********************`;
-
 
     return receiptString;
 }

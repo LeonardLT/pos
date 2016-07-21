@@ -2,7 +2,7 @@
 
 describe('pos', () => {
 
-    it('#1.formatTags()', () => {
+    it('#1.formatTags', () => {
 
         let tags = [
             'ITEM000001',
@@ -25,7 +25,7 @@ describe('pos', () => {
 
     });
 
-    it('#2.countBarcodes()', () => {
+    it('#2.countBarcodes', () => {
 
         let formattedTags = [
             {barcode: 'ITEM000001', count: 1},
@@ -46,7 +46,7 @@ describe('pos', () => {
 
     });
 
-    it('#3.buildCartItems()', () => {
+    it('#3.buildCartItems', () => {
         let countedBarcodes = [
 
             {barcode: 'ITEM000001', count: 3},
@@ -78,7 +78,7 @@ describe('pos', () => {
 
     });
 
-    it('#4.buildPromotedItems()', () => {
+    it('#4.buildPromotedItems', () => {
         let cartItems = [
             {
                 barcode: 'ITEM000001',
@@ -124,7 +124,7 @@ describe('pos', () => {
         expect(promotedItems).toEqual(expectPromotedItems);
     });
 
-    it('#5.calculateTotalPrice', () => {
+    it('#5.calculateTotalPrices', () => {
         let promotedItems = [
             {
                 barcode: 'ITEM000001',

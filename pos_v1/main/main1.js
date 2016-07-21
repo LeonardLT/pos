@@ -15,7 +15,6 @@ function printReceipt(tags) {
 //#NO.1:获取商品数量
 function barcodeCount(barcodeArr) {
   var initCartItems = [];
-  // debugger;
   barcodeArr.forEach(function(barcode) {
     var item = {};
     if (isExist(barcode, initCartItems) === false) {
@@ -29,7 +28,6 @@ function barcodeCount(barcodeArr) {
       initCartItems.push(item);
     }
   });
-  // console.log(initCartItems);
   return initCartItems;
 }
 
@@ -60,7 +58,6 @@ function getCartItemInfo(initCartItems, allCartItem) {
     cartItemInfo.count = item.count;
     cartItems.push(cartItemInfo);
   });
-  // console.log(cartItems);
   return cartItems;
 }
 
@@ -81,7 +78,6 @@ function buildFianlCartItems(cartItems, promotionItems) {
     }
     finalCartItems.push(finalItemInfo);
   });
-  // console.log(finalCartItems);
   return finalCartItems;
 }
 
@@ -107,7 +103,6 @@ function buildFianlTotal(finalCartItems) {
     finalTotal.total += finalItemInfo.subtotal;
     finalTotal.save += (finalItemInfo.count * finalItemInfo.item.price) - finalItemInfo.subtotal;
   });
-  // console.log(finalTotal);
   return finalTotal;
 }
 
@@ -119,10 +114,6 @@ function buildReceipt(finalCartItems, finalTotal) {
 名称：${finalItemInfo.item.name}，数量：${finalItemInfo.count}${finalItemInfo.item.unit}，单价：${finalItemInfo.item.price.toFixed(2)}(元)，小计：${finalItemInfo.subtotal.toFixed(2)}(元)`;
   }
 
-  //   finalCartItems.forEach(function(finalItemInfo) {
-  //     receipt += `
-  // 名称：${finalItemInfo.item.name}，数量：${finalItemInfo.count}${finalItemInfo.item.unit}，单价：${finalItemInfo.item.price.toFixed(2)}(元)，小计：${finalItemInfo.subtotal.toFixed(2)}(元)`;
-  //   });
   receipt += `
 ----------------------
 总计：${finalTotal.total.toFixed(2)}(元)
@@ -133,38 +124,5 @@ function buildReceipt(finalCartItems, finalTotal) {
   return receipt;
 }
 
-
-
-//测试
-// var tags = [
-//   'ITEM000001',
-//   'ITEM000001',
-//   'ITEM000001',
-//   'ITEM000001',
-//   'ITEM000001',
-//   'ITEM000003-2',
-//   'ITEM000005',
-//   'ITEM000005',
-//   'ITEM000005'
-// ];
-//
-// var barcodeArr1 = [
-//   'ITEM000000',
-//   'ITEM000001',
-//   'ITEM000002',
-//   'ITEM000003',
-//   'ITEM000004',
-//   'ITEM000005-2',
-// ];
-//
-// console.log('#1-result:');
-// var initCartItems = barcodeCount(barcodeArr);
-// console.log('#2-result:');
-// var cartItems = getCartItemInfo(initCartItems, allCartItem);
-// console.log('#3 & #4-result:');
-// var finalCartItems = buildFianlCartItems(cartItems, promotionItems);
-// console.log('#5-result:');
-// var finalTotal = buildFianlTotal(finalCartItems);
-// console.log('#6 & #7-result:');
-// var receipt = buildReceipt(finalCartItems, finalTotal);
-// printReceipt(tags);
+let a = 'a-a';
+console.log(a.indexOf('-'));
