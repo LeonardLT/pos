@@ -26,19 +26,31 @@ function isExist(barcode, array) {
 
 
 //#1
-function formatTags(tags) {
-    let result = [];
-    for (let tag of tags) {
-        if (tag.indexOf("-") === -1) {
-            result.push({barcode: tag, count: 1});
-        } else {
-            let temps = tag.split("-");
-            result.push({barcode: temps[0], count: parseInt(temps[1])});
-        }
-    }
-    return result;
-}
+//function formatTags(tags) {
+//    let result = [];
+//    for (let tag of tags) {
+//        if (tag.indexOf("-") === -1) {
+//            result.push({barcode: tag, count: 1});
+//        } else {
+//            let temps = tag.split("-");
+//            result.push({barcode: temps[0], count: parseInt(temps[1])});
+//        }
+//    }
+//    return result;
+//}
 
+
+//use map(),includes()
+function formatTags(tags) {
+    return tags.map((tag) => {
+        if (tag.includes('-')) {
+            let temps = tag.split('-');
+            return {barcode: temps[0], count: parseInt(temps[1])};
+        } else {
+            return {barcode: tag, count: 1};
+        }
+    });
+}
 
 //#2
 function countBarcodes(formattedTags) {
@@ -120,25 +132,44 @@ function calculateTotalPrices(promotedItems) {
 }
 
 //#6
+//function buildReceipt(promotedItems, totalPrices) {
+//    let receiptItems = [];
+//    for (let element of promotedItems) {
+//        receiptItems.push(
+//            {
+//                name: element.name,
+//                unit: element.unit,
+//                price: element.price,
+//                count: element.count,
+//                payPrice: element.payPrice
+//            }
+//        );
+//    }
+//    let result = {
+//        receiptItems,
+//        totalPayPrice: totalPrices.totalPayPrice,
+//        totalSaved: totalPrices.totalSaved
+//    };
+//    return result;
+//}
+
+//use map
 function buildReceipt(promotedItems, totalPrices) {
-    let receiptItems = [];
-    for (let element of promotedItems) {
-        receiptItems.push(
-            {
-                name: element.name,
-                unit: element.unit,
-                price: element.price,
-                count: element.count,
-                payPrice: element.payPrice
-            }
-        );
-    }
-    let result = {
+    let receiptItems = promotedItems.map((promotedItem) => {
+        return {
+            name: promotedItem.name,
+            unit: promotedItem.unit,
+            price: promotedItem.price,
+            count: promotedItem.count,
+            payPrice: promotedItem.payPrice
+        };
+    });
+
+    return {
         receiptItems,
         totalPayPrice: totalPrices.totalPayPrice,
         totalSaved: totalPrices.totalSaved
     };
-    return result;
 }
 
 
